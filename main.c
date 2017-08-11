@@ -16,14 +16,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+       #include <unistd.h>
+
 #include "cc_api.h"
 #ifdef CC_GETOPT_ENABLED
 #include <getopt.h>
 #endif
 
+
 int main(int argc, char **argv)
 {
 	char *attr = NULL, *proxy_uris = NULL;
+	//char *attr = "calvinip://localhost:5000", *proxy_uris = "{\"indexed_public\": {\"node_name\": {\"name\": \"constrained\"}}}";
 	node_t *node = NULL;
 #ifdef CC_GETOPT_ENABLED
 	int c = 0;
@@ -48,6 +52,7 @@ int main(int argc, char **argv)
 
 #endif
 
+	sleep(2);
 	if (api_runtime_init(&node, attr, proxy_uris, "./") != CC_RESULT_SUCCESS)
 		return EXIT_FAILURE;
 

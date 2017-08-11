@@ -18,7 +18,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include "../../north/cc_common.h"
 #include "../../../calvinsys/cc_calvinsys.h"
 

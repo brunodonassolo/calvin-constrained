@@ -96,7 +96,11 @@ static result_t transport_socket_discover_location(char *location)
 
 	if (FD_ISSET(sock, &fds)) {
 		socklen = sizeof(clientsock);
+#ifdef CC_LWIP_SOCKET
+		len = recvfrom(sock, buffer, RECV_BUF_SIZE, MSG_PEEK, &clientsock, (socklen_t *) &socklen);
+#else
 		len = recvfrom(sock, buffer, RECV_BUF_SIZE, MSG_PEEK, &clientsock, &socklen);
+#endif
 		if (len == -1) {
 			cc_log_error("Failed to receive ssdp response");
 			return CC_RESULT_FAIL;
