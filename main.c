@@ -16,15 +16,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-       #include <unistd.h>
 
 #include "cc_api.h"
 #ifdef CC_GETOPT_ENABLED
 #include <getopt.h>
 #endif
 
+#include "shell.h"
+#include "msg.h"
 
-int main(int argc, char **argv)
+#define MAIN_QUEUE_SIZE     (8)
+static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
+
+
+int calvin_c(int argc, char **argv)
 {
 	char *attr = NULL, *proxy_uris = NULL;
 	//char *attr = "calvinip://localhost:5000", *proxy_uris = "{\"indexed_public\": {\"node_name\": {\"name\": \"constrained\"}}}";
@@ -52,7 +57,6 @@ int main(int argc, char **argv)
 
 #endif
 
-	sleep(2);
 	if (api_runtime_init(&node, attr, proxy_uris, "./") != CC_RESULT_SUCCESS)
 		return EXIT_FAILURE;
 
@@ -61,3 +65,26 @@ int main(int argc, char **argv)
 
 	return EXIT_SUCCESS;
 }
+
+static const shell_command_t shell_commands[] = {
+    { "calvin", "Start calving", calvin_c },
+    { NULL, NULL, NULL }
+};
+
+
+int main(void)
+{
+    /* we need a message queue for the thread running the shell in order to
+     * receive potentially fast incoming networking packets */
+    msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
+    puts("RIOT calvin application");
+
+    /* start shell */
+    puts("All up, running the shell now");
+    char line_buf[SHELL_DEFAULT_BUFSIZE];
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
+
+    /* should be never reached */
+    return 0;
+}
+

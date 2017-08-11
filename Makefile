@@ -7,8 +7,8 @@ CFLAGS += -DCC_TRANSPORT_SOCKET -DCC_TRANSPORT_SOCKET_SSDP_ENABLED
 #CFLAGS += -DCC_STORAGE_ENABLED -DCC_RUNTIME_STATE_BUFFER_SIZE=10000
 CFLAGS += -DCC_DEEPSLEEP_ENABLED -DCC_INACTIVITY_TIMEOUT=5 -DCC_SLEEP_TIME=60
 CFLAGS += -DCC_ACTOR_IDENTITY -DCC_ACTOR_BUTTON -DCC_ACTOR_LIGHT -DCC_ACTOR_SOIL_MOISTURE -DCC_ACTOR_TEMPERATURE
-CFLAGS += -DCC_LWIP_SOCKET -DCC_DEBUG
-CFLAGS += -Wno-address
+CFLAGS += -DCC_LWIP_SOCKET -DCC_GETOPT_ENABLED -DCC_DEBUG
+CFLAGS += -Wno-address -Wno-error=format=
 
 BASE = $(HOME)/calvin-constrained
 
@@ -22,27 +22,24 @@ msgpuck \
 calvinsys/ \
 actors/
 
-#USEMODULE += gnrc_netdev_default
-#USEMODULE += auto_init_gnrc_netif
-#USEMODULE += gnrc_pktdump
-#USEMODULE += gnrc_sock_udp
-#USEMODULE += gnrc_ipv6_default
-#USEMODULE += posix_sockets
-#USEMODULE += netstats_l2
+USEMODULE += lwip_ipv6_autoconfig lwip_ipv6
+USEMODULE += lwip_sock_ip lwip_ipv4
+USEMODULE += lwip_udp lwip_sock_udp
+USEMODULE += lwip_tcp lwip_sock_tcp
+USEMODULE += lwip_netdev
+
+# shell modules
 USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
-USEMODULE += lwip_ipv6_autoconfig lwip_sock_ip lwip_netdev lwip_ipv6 lwip_ipv4 lwip_arp
-USEMODULE += lwip_udp lwip_sock_udp lwip_ethernet
-USEMODULE += lwip_tcp lwip_sock_tcp
-USEMODULE += lwip
-USEMODULE += inet_csum
-USEMODULE += lwip_ethernet lwip_netdev
-USEMODULE += lwip_sock_ip
-USEMODULE += netdev_eth
-USEMODULE += netdev_test
-USEMODULE += ps
-
+USEMODULE += netstats_l2
+USEMODULE += netstats_ipv6
+USEMODULE += netstats_rpl
+USEMODULE += auto_init_gnrc_netif
+#USEMODULE += gnrc_netdev_default
+USEMODULE += gnrc_pktdump
+## Additional networking modules that can be dropped if not needed
+USEMODULE += gnrc_icmpv6_echo
 
 
 USEMODULE += actors calvinsys msgpuck socket np_scheduler north riot
